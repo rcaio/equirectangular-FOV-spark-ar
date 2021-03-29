@@ -6,7 +6,7 @@ Equirectangular FOV | Spark AR
 ![](./demo-assets/360_fov_patch.png)
 
 
-## You can make a Tiny World effect by changing the field 
+## You can make a Tiny World effect by changing the tiny world field 
 (Value range between 0 and 1.5)
 
 | <img src="./demo-assets/tiny-world.png" height="440"> |
