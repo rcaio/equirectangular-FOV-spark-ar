@@ -1,5 +1,7 @@
 # equirectangular-FOV-spark-ar
 Equirectangular FOV | Spark AR
+| <img src="./demo-assets/zoom_in_out.jpg" height="440"> |
+
 
 ## Change the Field of View of 360° Equirectangular Texture
 
