@@ -13,3 +13,5 @@ Equirectangular FOV | Spark AR
 
 
 ## [Download the project](https://github.com/rcaio/equirectangular-FOV-spark-ar/archive/refs/heads/main.zip)
+
+Spark AR v109.0
