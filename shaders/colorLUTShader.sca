@@ -1,0 +1,39 @@
+vec4 getLutColor(vec2 rg, float sliceNo, std::Texture2d colorLutTex, vec2 gridSize) {
+  vec2 pixelSize = 1.0 / colorLutTex.size;
+  vec2 scale = 1.0 / gridSize;
+
+  float row = floor(sliceNo * scale.x);
+  float col = sliceNo - row * gridSize.x; // mod(sliceNo, gridSize.x);
+
+  vec2 colorLutCoords = (vec2(col, row) + rg) * scale;
+
+  // offset by 0.5 pixel and fit within range [0.5px, width-0.5px]
+  // to prevent bilinear filtering with adjacent slices
+  colorLutCoords += (0.5 - rg) * pixelSize;
+
+  return colorLutTex.sample(colorLutCoords);
+}
+
+vec4 applyColorLut(vec2 uv, std::Texture2d inputTex, std::Texture2d colorLutTex, vec2 gridSize, float intensity) {
+  vec4 inputColor = inputTex.sample(uv);
+
+  // Clamping to make sure the input color is in range
+  inputColor = clamp(inputColor, 0.0, 1.0);
+
+  // Scaling to avoid edge
+  float slice = gridSize.x * gridSize.y * (255.0 / 256.0) * inputColor.b;
+  float sliceNo = floor(slice);
+
+  vec4 lutColor = getLutColor(inputColor.rg, sliceNo, colorLutTex, gridSize);
+
+  intensity = clamp(intensity, 0.0, 1.0);
+  return mix(inputColor, lutColor, intensity);
+}
+
+// Entry point of the shader code patch
+//
+// @param[default=vec2(8.0, 8.0)] GridSize Number of cells over blue channel
+// @param[default=1.0, min=0.0, max=1.0] Intensity ColorLUT intensity
+function<vec4(vec2)> main(std::Texture2d Texture, std::Texture2d ColorLUT, vec2 GridSize, float Intensity) {
+  return [](vec2 uv) { return applyColorLut(uv, Texture, ColorLUT, GridSize, Intensity); };
+}
